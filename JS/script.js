@@ -142,9 +142,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </thead>
                         <tbody>
                             ${taraValues.map((tara, index) => {
-                                const diferenca = tara - mediaTara;
-                                const isRecomendada = tara === melhorTara;
-                                return `
+                    const diferenca = tara - mediaTara;
+                    const isRecomendada = tara === melhorTara;
+                    return `
                                     <tr ${isRecomendada ? 'class="table-success"' : ''}>
                                         <td>Tara ${index + 1}</td>
                                         <td>${formatarNumero(tara)}</td>
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <td>${isRecomendada ? '<i class="fas fa-star text-warning"></i> Recomendada' : ''}</td>
                                     </tr>
                                 `;
-                            }).join('')}
+                }).join('')}
                             <tr class="table-active">
                                 <td><strong>Total</strong></td>
                                 <td><strong>${formatarNumero(somaTara)}</strong></td>
@@ -229,20 +229,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         </thead>
                         <tbody>
                             ${pesoValues.map((peso, index) => {
-                                const diff = peso - pesoPadrao;
-                                const dentroMargem = Math.abs(diff) <= margem;
-                                return `
+                    const diff = peso - pesoPadrao;
+                    const dentroMargem = Math.abs(diff) <= margem;
+                    return `
                                     <tr class="${dentroMargem ? 'table-success' : 'table-warning'}">
                                         <td>Peso ${index + 1}</td>
                                         <td>${formatarNumero(peso)}</td>
                                         <td>${diff >= 0 ? '+' : ''}${formatarNumero(diff)}</td>
                                         <td>${dentroMargem ?
-                                            '<i class="fas fa-check text-success"></i> OK' :
-                                            '<i class="fas fa-exclamation-triangle text-warning"></i> Fora'
-                                        }</td>
+                            '<i class="fas fa-check text-success"></i> OK' :
+                            '<i class="fas fa-exclamation-triangle text-warning"></i> Fora'
+                        }</td>
                                     </tr>
                                 `;
-                            }).join('')}
+                }).join('')}
                             <tr class="table-active">
                                 <td><strong>Média das Amostras</strong></td>
                                 <td><strong>${formatarNumero(mediaPeso)}</strong></td>
@@ -295,19 +295,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const grupoA = ['A01', 'A02', 'A03', 'A04', 'A06', 'A07', 'A08'];
 
         if (grupoS_semS10.includes(linha)) return 'S';   // L VHE DD HHMM J \n V MM/AA
-        if (linha === 'S10')               return 'S10';  // V MM/AA LVEEДDHHMM J
-        if (grupoD.includes(linha))        return 'D';    // V MM/AA L VHE DD HHMM J
-        if (grupoA.includes(linha))        return 'A';    // F: MM/AA V: MM/AA \n L: VPE DD HHMM J
+        if (linha === 'S10') return 'S10';  // V MM/AA LVEEДDHHMM J
+        if (grupoD.includes(linha)) return 'D';    // V MM/AA L VHE DD HHMM J
+        if (grupoA.includes(linha)) return 'A';    // F: MM/AA V: MM/AA \n L: VPE DD HHMM J
         return 'S';
     }
 
     // Gera o código de validade no formato certo para cada grupo
     function gerarCodigo(linha, diaProducao, mes, ano, hora, dataValidade, mapeamentoLetras) {
         const letraLinha = mapeamentoLetras.linhas[linha];
-        const letraMes   = mapeamentoLetras.meses[mes];
-        const letraAno   = mapeamentoLetras.anos[ano];
-        const horaFmt    = hora.replace(':', '');
-        const diaFmt     = diaProducao.toString().padStart(2, '0');
+        const letraMes = mapeamentoLetras.meses[mes];
+        const letraAno = mapeamentoLetras.anos[ano];
+        const horaFmt = hora.replace(':', '');
+        const diaFmt = diaProducao.toString().padStart(2, '0');
 
         const mesVal = (dataValidade.getMonth() + 1).toString().padStart(2, '0');
         const anoVal = dataValidade.getFullYear().toString().slice(-2);
@@ -331,11 +331,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return `V ${mesVal}/${anoVal} L V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}`;
         }
         if (formato === 'A') {
-            // A01–A08:
-            // F: MM/AA V: MM/AA
-            // L: VP + letraMes + letraAno + DD + HHMM + letraAno
-            // Exemplo: F: 05/26 V: 05/28  /  L: VPE 23 0808 J
-            return `F: ${mesFab}/${anoFab} V: ${mesVal}/${anoVal}\nL: V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}`;
+            // A01–A08: F: MM/AA V: MM/AA \n L: VPE DD HHMM J
+            return `F: ${mesFab}/${anoFab} V: ${mesVal}/${anoVal}\nL: VP${letraLinha} ${diaFmt} ${horaFmt} ${letraAno}`;
         }
         return '';
     }
@@ -345,19 +342,19 @@ document.addEventListener('DOMContentLoaded', function () {
         validadeForm.addEventListener('submit', function (e) {
             e.preventDefault();
             try {
-                const linha  = document.getElementById('linhaProduto').value;
-                const mes    = parseInt(document.getElementById('mesValidade').value);
-                const ano    = parseInt(document.getElementById('anoValidade').value);
+                const linha = document.getElementById('linhaProduto').value;
+                const mes = parseInt(document.getElementById('mesValidade').value);
+                const ano = parseInt(document.getElementById('anoValidade').value);
                 const tempoValidade = parseInt(document.getElementById('tempoValidade').value);
-                const hora   = document.getElementById('horaProducao').value;
+                const hora = document.getElementById('horaProducao').value;
                 const diaInput = parseInt(document.getElementById('diaProducaoInput').value);
 
                 if (!linha || !mes || !ano || !hora || isNaN(diaInput)) {
                     throw new Error('Todos os campos são obrigatórios.');
                 }
                 if (!mapeamentoLetras.linhas[linha]) throw new Error('Linha de produção inválida.');
-                if (!mapeamentoLetras.meses[mes])    throw new Error('Mês inválido.');
-                if (!mapeamentoLetras.anos[ano])     throw new Error('Ano não suportado pelo sistema.');
+                if (!mapeamentoLetras.meses[mes]) throw new Error('Mês inválido.');
+                if (!mapeamentoLetras.anos[ano]) throw new Error('Ano não suportado pelo sistema.');
 
                 const diasNoMesSelecionado = getDiasNoMes(ano, mes);
                 const diaProducao = Math.min(diaInput, diasNoMesSelecionado);
@@ -391,12 +388,126 @@ document.addEventListener('DOMContentLoaded', function () {
                 const diasRestantes = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
 
                 const letraLinha = mapeamentoLetras.linhas[linha];
-                const letraMes   = mapeamentoLetras.meses[mes];
-                const letraAno   = mapeamentoLetras.anos[ano];
+                const letraMes = mapeamentoLetras.meses[mes];
+                const letraAno = mapeamentoLetras.anos[ano];
 
                 const codigo = gerarCodigo(linha, diaProducao, mes, ano, hora, dataValidade, mapeamentoLetras);
 
                 const formatDate = (date) => date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
                 const resultadoDiv = document.getElementById('resultadoValidade');
-                const detailsDiv   = document.getElem
+                const detailsDiv = document.getElementById('validadeDetails');
+                const statusDiv = document.getElementById('validadeStatus');
+                const codigoDiv = document.getElementById('codigoValidade');
+
+                detailsDiv.innerHTML = `
+                    ${infoAjuste}
+                    ${infoMeses}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Data de Hoje:</strong> ${formatDate(hoje)}</p>
+                            <p><strong>Data de Produção:</strong> ${formatDate(dataProducao)}</p>
+                            <p><strong>Validade:</strong> ${tempoValidade} meses</p>
+                            <p><strong>Data de Validade:</strong> ${formatDate(dataValidade)}</p>
+                            <p><strong>Horário de Produção:</strong> ${hora}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Linha:</strong> ${linha} → (${letraLinha})</p>
+                            <p><strong>Mês:</strong> ${mes} → (${letraMes})</p>
+                            <p><strong>Ano:</strong> ${ano} → (${letraAno})</p>
+                            <p><strong>Dia:</strong> ${diaProducao}</p>
+                            <p><strong>Dias restantes:</strong> ${diasRestantes > 0 ? diasRestantes : '<span class="text-danger">VENCIDO</span>'}</p>
+                        </div>
+                    </div>
+                `;
+
+                if (aprovado) {
+                    const textoStatus = diasRestantes > 30 ? 'PRODUTO APROVADO' : 'PRODUTO APROVADO (Próximo ao vencimento)';
+                    statusDiv.innerHTML = `<span class="text-success"><i class="fas fa-check-circle me-2"></i>${textoStatus}</span>`;
+                    resultadoDiv.style.borderLeft = '4px solid #1a7a3c';
+                    if (diasRestantes <= 30) {
+                        detailsDiv.appendChild(mostrarAlerta('warning', 'ATENÇÃO',
+                            `Produto vence em ${diasRestantes} dias. Considere priorizar a comercialização.`));
+                    }
+                } else {
+                    statusDiv.innerHTML = '<span class="text-danger"><i class="fas fa-times-circle me-2"></i>PRODUTO REPROVADO (CRQS/PQS)</span>';
+                    resultadoDiv.style.borderLeft = '4px solid #c0392b';
+                    detailsDiv.appendChild(mostrarAlerta('danger', 'PRODUTO VENCIDO',
+                        'Este produto não pode ser comercializado. Destinação conforme procedimento CRQS.'));
+                }
+
+                // Exibe código — cada linha do código em uma linha separada visualmente
+                const codigoLinhas = codigo.split('\n').map(l => `<div>${l}</div>`).join('');
+                codigoDiv.innerHTML = `
+                    <h6 class="mb-2"><i class="fas fa-barcode me-2"></i>Código de Validade:</h6>
+                    <code class="fs-5" id="codigoTexto">${codigoLinhas}</code>
+                    <button class="btn btn-sm btn-outline-primary ms-3 mt-2" id="btnCopiarCodigo">
+                        <i class="fas fa-copy me-1"></i>Copiar
+                    </button>
+                `;
+
+                // Botão copiar com addEventListener (sem onclick inline)
+                const btnCopiar = document.getElementById('btnCopiarCodigo');
+                if (btnCopiar) {
+                    btnCopiar.addEventListener('click', function () {
+                        navigator.clipboard.writeText(codigo).then(() => {
+                            btnCopiar.innerHTML = '<i class="fas fa-check me-1"></i>Copiado!';
+                            btnCopiar.classList.replace('btn-outline-primary', 'btn-success');
+                            setTimeout(() => {
+                                btnCopiar.innerHTML = '<i class="fas fa-copy me-1"></i>Copiar';
+                                btnCopiar.classList.replace('btn-success', 'btn-outline-primary');
+                            }, 2000);
+                        }).catch(() => {
+                            alert('Não foi possível copiar. Selecione o código manualmente.');
+                        });
+                    });
+                }
+
+                resultadoDiv.classList.remove('d-none');
+                resultadoDiv.classList.add('fade-in');
+                resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        });
+    }
+
+    // ==================== LIMPAR ====================
+    document.getElementById('limparTara')?.addEventListener('click', function () {
+        if (confirm('Deseja limpar todos os campos de tara?')) {
+            for (let i = 1; i <= 10; i++) document.getElementById(`tara${i}`).value = '';
+            document.getElementById('5amostras').checked = true;
+            document.getElementById('10amostrasFields').classList.add('d-none');
+            document.getElementById('resultadoTara').classList.add('d-none');
+        }
+    });
+
+    document.getElementById('limparPeso')?.addEventListener('click', function () {
+        if (confirm('Deseja limpar todos os campos de peso?')) {
+            for (let i = 1; i <= 5; i++) document.getElementById(`peso${i}`).value = '';
+            document.getElementById('pesoPadrao').value = '';
+            document.getElementById('resultadoPeso').classList.add('d-none');
+        }
+    });
+
+    document.getElementById('limparValidade')?.addEventListener('click', function () {
+        if (confirm('Deseja limpar todos os campos de validade?')) {
+            document.getElementById('validadeForm').reset();
+            document.getElementById('resultadoValidade').classList.add('d-none');
+        }
+    });
+
+    // ==================== FEEDBACK VISUAL ====================
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function () {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.classList.add('loading');
+                setTimeout(() => submitBtn.classList.remove('loading'), 1000);
+            }
+        });
+    });
+
+    console.log('SmartQuality 4.0 carregado com sucesso!');
+});
