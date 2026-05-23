@@ -331,8 +331,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return `V ${mesVal}/${anoVal} L V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}`;
         }
         if (formato === 'A') {
-            // A01–A08: F: MM/AA V: MM/AA \n L: VPE DD HHMM J
-            return `F: ${mesFab}/${anoFab} V: ${mesVal}/${anoVal}\nL: VP${letraLinha} ${diaFmt} ${horaFmt} ${letraAno}`;
+            // A01–A08:
+            // F: MM/AA V: MM/AA
+            // L: VP + letraMes + letraAno + DD + HHMM + letraAno
+            // Exemplo: F: 05/26 V: 05/28  /  L: VPE 23 0808 J
+            return `F: ${mesFab}/${anoFab} V: ${mesVal}/${anoVal}\nL: V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}`;
         }
         return '';
     }
