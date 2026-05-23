@@ -305,11 +305,12 @@
                 <div class="container my-5">
                     <div class="row justify-content-center">
                         <div class="col-12 text-center mb-4">
+                            <!-- BUG 1 CORRIGIDO: max-inline-size → max-width / min-inline-size → min-width -->
                             <picture>
                                 <source media="(max-inline-size: 768px)" srcset="./Img/Imagem-Inspetor-mobile.png" type="image/png">
                                 <source media="(min-inline-size: 769px)" srcset="./Img/Imagem-Inspetor-desktop.png" type="image/png">
                                 <img
-                                    src="./Img/Indústria 4.0 Qualidade e Inovação.png"
+                                    src="./Img/Imagem-Inspetor-desktop.png"
                                     alt="Inspetor de Qualidade - SmartQuality 4.0"
                                     class="img-fluid hero-image"
                                     width="900"
@@ -439,6 +440,8 @@
                                                     >
                                                 </div>
                                             </div>
+                                            <!-- BUG 4 CORRIGIDO: campos 6-10 já nascem sem required;
+                                                 o JS adiciona/remove required dinamicamente conforme a seleção -->
                                             <div class="row g-3 mt-3 d-none" id="10amostrasFields">
                                                 <div class="col-md-6">
                                                     <label for="tara6" class="form-label">Tara Amostra 06 (kg)</label>

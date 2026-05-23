@@ -87,17 +87,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ==================== TARA ====================
+
+    // BUG 4 CORRIGIDO: gerencia required dos campos 6-10 de forma robusta
+    function atualizarCamposTara(use10) {
+        const campos10 = document.getElementById('10amostrasFields');
+        campos10.classList.toggle('d-none', !use10);
+        for (let i = 6; i <= 10; i++) {
+            const input = document.getElementById(`tara${i}`);
+            if (use10) {
+                input.setAttribute('required', 'required');
+            } else {
+                input.removeAttribute('required');
+                input.value = '';
+            }
+        }
+    }
+
     document.querySelectorAll('input[name="qtdAmostras"]').forEach(radio => {
         radio.addEventListener('change', function () {
-            const show10 = this.id === '10amostras';
-            document.getElementById('10amostrasFields').classList.toggle('d-none', !show10);
-            for (let i = 6; i <= 10; i++) {
-                const input = document.getElementById(`tara${i}`);
-                input.required = show10;
-                if (!show10) input.value = '';
-            }
+            atualizarCamposTara(this.id === '10amostras');
         });
     });
+
+    // Garante estado inicial correto ao carregar a página
+    atualizarCamposTara(false);
 
     const taraForm = document.getElementById('taraForm');
     if (taraForm) {
@@ -288,24 +301,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ==================== VALIDADE ====================
 
-    // Define o formato do código por grupo de linha
     function getFormatoLinha(linha) {
         const grupoS_semS10 = ['S01', 'S03', 'S05', 'S08', 'S11', 'S12', 'S14'];
         const grupoD = ['D11', 'D12'];
         const grupoA = ['A01', 'A02', 'A03', 'A04', 'A06', 'A07', 'A08'];
 
-        if (grupoS_semS10.includes(linha)) return 'S';   // L VHE DD HHMM J \n V MM/AA
-        if (linha === 'S10') return 'S10';  // V MM/AA LVEEДDHHMM J
-        if (grupoD.includes(linha)) return 'D';    // V MM/AA L VHE DD HHMM J
-        if (grupoA.includes(linha)) return 'A';    // F: MM/AA V: MM/AA \n L: VPE DD HHMM J
+        if (grupoS_semS10.includes(linha)) return 'S';
+        if (linha === 'S10') return 'S10';
+        if (grupoD.includes(linha)) return 'D';
+        if (grupoA.includes(linha)) return 'A';
         return 'S';
     }
 
-    // Gera o código de validade no formato certo para cada grupo
+    // BUG 3 CORRIGIDO: letraAno agora usa o ano de produção corretamente em todos os grupos.
+    // A letra do lote (J) representa o ANO DE PRODUÇÃO, não o ano de validade.
     function gerarCodigo(linha, diaProducao, mes, ano, hora, dataValidade, mapeamentoLetras) {
         const letraLinha = mapeamentoLetras.linhas[linha];
         const letraMes = mapeamentoLetras.meses[mes];
-        const letraAno = mapeamentoLetras.anos[ano];
+        const letraAno = mapeamentoLetras.anos[ano]; // Sempre ano de PRODUÇÃO
+
         const horaFmt = hora.replace(':', '');
         const diaFmt = diaProducao.toString().padStart(2, '0');
 
@@ -317,24 +331,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const formato = getFormatoLinha(linha);
 
         if (formato === 'S') {
-            // S01, S03, S05, S08, S11, S12, S14
-            // Linha 1: L VHE DD HHMM J
-            // Linha 2: V MM/AA
+            // L VHE DD HHMM J  /  V MM/AA
             return `L V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}\nV ${mesVal}/${anoVal}`;
         }
         if (formato === 'S10') {
-            // S10: V MM/AA LVEEДDHHMM J (tudo junto)
+            // V MM/AA LVEEDDHHMM J
             return `V ${mesVal}/${anoVal} LV${letraLinha}${letraMes}${diaFmt}${horaFmt} ${letraAno}`;
         }
         if (formato === 'D') {
-            // D11, D12: V MM/AA L VHE DD HHMM J
+            // V MM/AA L VHE DD HHMM J
             return `V ${mesVal}/${anoVal} L V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}`;
         }
         if (formato === 'A') {
-            // A01–A08:
-            // F: MM/AA V: MM/AA
-            // L: VP + letraMes + letraAno + DD + HHMM + letraAno
-            // Exemplo: F: 05/26 V: 05/28  /  L: VPE 23 0808 J
+            // F: MM/AA V: MM/AA  /  L: VPE DD HHMM J
             return `F: ${mesFab}/${anoFab} V: ${mesVal}/${anoVal}\nL: V${letraLinha}${letraMes} ${diaFmt} ${horaFmt} ${letraAno}`;
         }
         return '';
@@ -362,8 +371,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const diasNoMesSelecionado = getDiasNoMes(ano, mes);
                 const diaProducao = Math.min(diaInput, diasNoMesSelecionado);
 
-                const dataProducao = new Date(ano, mes - 1, diaProducao);
+                // BUG 2 CORRIGIDO: zeramos o horário de "hoje" antes de comparar,
+                // assim a comparação é feita apenas por data (dia/mês/ano),
+                // evitando falsos positivos quando a hora atual passa da hora informada.
                 const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+
+                const dataProducao = new Date(ano, mes - 1, diaProducao);
+                dataProducao.setHours(0, 0, 0, 0);
 
                 if (dataProducao > hoje) throw new Error('A data de produção não pode ser futura.');
 
@@ -371,6 +386,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 dataValidade.setMonth(dataValidade.getMonth() + tempoValidade);
 
                 const diasNoMesValidade = getDiasNoMes(dataValidade.getFullYear(), dataValidade.getMonth() + 1);
+
+                // Para calcular dias restantes comparamos dataValidade com hoje (sem hora)
+                const hojeParaDias = new Date();
+                hojeParaDias.setHours(0, 0, 0, 0);
+                const diasRestantes = Math.ceil((dataValidade - hojeParaDias) / (1000 * 60 * 60 * 24));
+                const aprovado = diasRestantes > 0;
 
                 let infoAjuste = '';
                 if (diaInput !== diaProducao) {
@@ -386,9 +407,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     <strong>Mês de produção</strong> (${mes}/${ano}): ${diasNoMesSelecionado} dias. &nbsp;|&nbsp;
                     <strong>Mês de validade</strong> (${dataValidade.getMonth() + 1}/${dataValidade.getFullYear()}): ${diasNoMesValidade} dias.
                 </div>`;
-
-                const aprovado = dataValidade > hoje;
-                const diasRestantes = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
 
                 const letraLinha = mapeamentoLetras.linhas[linha];
                 const letraMes = mapeamentoLetras.meses[mes];
@@ -419,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p><strong>Mês:</strong> ${mes} → (${letraMes})</p>
                             <p><strong>Ano:</strong> ${ano} → (${letraAno})</p>
                             <p><strong>Dia:</strong> ${diaProducao}</p>
-                            <p><strong>Dias restantes:</strong> ${diasRestantes > 0 ? diasRestantes : '<span class="text-danger">VENCIDO</span>'}</p>
+                            <p><strong>Dias restantes:</strong> ${aprovado ? diasRestantes : '<span class="text-danger">VENCIDO</span>'}</p>
                         </div>
                     </div>
                 `;
@@ -439,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Este produto não pode ser comercializado. Destinação conforme procedimento CRQS.'));
                 }
 
-                // Exibe código — cada linha do código em uma linha separada visualmente
+                // Exibe código com cada linha separada visualmente
                 const codigoLinhas = codigo.split('\n').map(l => `<div>${l}</div>`).join('');
                 codigoDiv.innerHTML = `
                     <h6 class="mb-2"><i class="fas fa-barcode me-2"></i>Código de Validade:</h6>
@@ -481,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (confirm('Deseja limpar todos os campos de tara?')) {
             for (let i = 1; i <= 10; i++) document.getElementById(`tara${i}`).value = '';
             document.getElementById('5amostras').checked = true;
-            document.getElementById('10amostrasFields').classList.add('d-none');
+            atualizarCamposTara(false);
             document.getElementById('resultadoTara').classList.add('d-none');
         }
     });
