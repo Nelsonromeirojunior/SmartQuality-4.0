@@ -1,5 +1,3 @@
-// ==================== SCRIPT.JS COMPLETO ATUALIZADO ====================
-
 document.addEventListener('DOMContentLoaded', function () {
     // Atualiza o ano no footer
     document.getElementById('ano-atual').textContent = new Date().getFullYear();
@@ -55,10 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const navbarHeight = document.querySelector('.navbar').offsetHeight;
                     const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
                     window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-<<<<<<< HEAD
                     if (history.pushState) history.pushState(null, null, this.getAttribute('href'));
-=======
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                 }
             });
         });
@@ -91,11 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return new Date(ano, mes, 0).getDate();
     }
 
-<<<<<<< HEAD
     // ==================== TARA ====================
-=======
-    // ==================== TARA (mantido igual) ====================
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
     document.querySelectorAll('input[name="qtdAmostras"]').forEach(radio => {
         radio.addEventListener('change', function () {
             const show10 = this.id === '10amostras';
@@ -185,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
 
                 resultadoDiv.classList.remove('d-none');
+                resultadoDiv.classList.add('fade-in');
                 resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             } catch (error) {
@@ -193,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ==================== PESO (mantido igual) ====================
+    // ==================== PESO ====================
     const pesoForm = document.getElementById('pesoForm');
     if (pesoForm) {
         pesoForm.addEventListener('submit', function (e) {
@@ -244,14 +236,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <td>Peso ${index + 1}</td>
                                         <td>${formatarNumero(peso)}</td>
                                         <td>${diff >= 0 ? '+' : ''}${formatarNumero(diff)}</td>
-<<<<<<< HEAD
                                         <td>${dentroMargem ?
                             '<i class="fas fa-check text-success"></i> OK' :
                             '<i class="fas fa-exclamation-triangle text-warning"></i> Fora'
                         }</td>
-=======
-                                        <td>${dentroMargem ? '<i class="fas fa-check text-success"></i> OK' : '<i class="fas fa-exclamation-triangle text-warning"></i> Fora'}</td>
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                                     </tr>
                                 `;
                 }).join('')}
@@ -276,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     </table>
                 `;
 
-<<<<<<< HEAD
                 statusDiv.innerHTML = aprovado
                     ? '<span class="text-success"><i class="fas fa-check-circle me-2"></i>PESO APROVADO</span>'
                     : '<span class="text-danger"><i class="fas fa-times-circle me-2"></i>PESO REPROVADO</span>';
@@ -287,19 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     const urgencia = Math.abs(diferenca) > (margem * 2) ? 'URGENTE' : 'ATENÇÃO';
                     detailsDiv.appendChild(mostrarAlerta('warning', `${urgencia} - OPERADOR`,
                         `Diferença de ${formatarNumero(Math.abs(diferenca))} kg detectada. ${recomendacao}.`));
-=======
-                if (aprovado) {
-                    statusDiv.innerHTML = '<span class="text-success"><i class="fas fa-check-circle me-2"></i>PESO APROVADO</span>';
-                } else {
-                    statusDiv.innerHTML = '<span class="text-danger"><i class="fas fa-times-circle me-2"></i>PESO REPROVADO</span>';
-                    const recomendacao = diferenca > 0 ? 'Reduzir o peso na máquina de envase' : 'Aumentar o peso na máquina de envase';
-                    const alertDiv = mostrarAlerta('warning', 'ATENÇÃO - OPERADOR',
-                        `Diferença de ${formatarNumero(Math.abs(diferenca))} kg. ${recomendacao}.`);
-                    detailsDiv.appendChild(alertDiv);
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                 }
 
                 resultadoDiv.classList.remove('d-none');
+                resultadoDiv.classList.add('fade-in');
                 resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             } catch (error) {
@@ -308,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-<<<<<<< HEAD
     // ==================== VALIDADE ====================
 
     // Define o formato do código por grupo de linha
@@ -360,9 +337,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return '';
     }
 
-=======
-    // ==================== VALIDADE - ATUALIZADA (NOVO FORMATO) ====================
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
     const validadeForm = document.getElementById('validadeForm');
     if (validadeForm) {
         validadeForm.addEventListener('submit', function (e) {
@@ -375,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const hora = document.getElementById('horaProducao').value;
                 const diaInput = parseInt(document.getElementById('diaProducaoInput').value);
 
-<<<<<<< HEAD
                 if (!linha || !mes || !ano || !hora || isNaN(diaInput)) {
                     throw new Error('Todos os campos são obrigatórios.');
                 }
@@ -415,77 +388,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 const diasRestantes = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
 
                 const letraLinha = mapeamentoLetras.linhas[linha];
-=======
-                if (!linha || !mes || !ano || !hora) throw new Error('Todos os campos são obrigatórios.');
-
-                const hoje = new Date();
-                const diaAtual = hoje.getDate();
-                const diasNoMesSelecionado = getDiasNoMes(ano, mes);
-                const diaProducao = Math.min(diaAtual, diasNoMesSelecionado);
-
-                const dataProducao = new Date(ano, mes - 1, diaProducao);
-                const dataValidade = new Date(dataProducao);
-                dataValidade.setMonth(dataValidade.getMonth() + tempoValidade);
-
-                if (dataProducao > hoje) throw new Error('A data de produção não pode ser futura.');
-
-                const aprovado = dataValidade > hoje;
-                const diasRestantes = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
-
-                const letraLinha = mapeamentoLetras.linhas[linha] || '?';
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                 const letraMes = mapeamentoLetras.meses[mes];
                 const letraAno = mapeamentoLetras.anos[ano];
 
-<<<<<<< HEAD
                 const codigo = gerarCodigo(linha, diaProducao, mes, ano, hora, dataValidade, mapeamentoLetras);
 
                 const formatDate = (date) => date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-=======
-                const mesProdStr = mes.toString().padStart(2, '0');
-                const mesValStr = (dataValidade.getMonth() + 1).toString().padStart(2, '0');
-                const anoValStr = dataValidade.getFullYear().toString().slice(-2);
-
-                let codigoTexto = '';
-                let codigoHTML = '';
-
-                // === LÓGICA POR TIPO DE LINHA ===
-                if (['S01', 'S03', 'S05', 'S08', 'S11', 'S12', 'S14'].includes(linha)) {
-                    codigoTexto = `L VHE ${diaProducao.toString().padStart(2, '0')} ${horaFormatada} ${letraAno}\nV ${mesValStr}/${anoValStr}`;
-                    codigoHTML = `
-                        <div><strong>Linha:</strong> <code>L VHE ${diaProducao.toString().padStart(2, '0')} ${horaFormatada} ${letraAno}</code></div>
-                        <div><strong>Validade:</strong> <code>V ${mesValStr}/${anoValStr}</code></div>
-                    `;
-
-                } else if (linha === 'S10') {
-                    codigoTexto = `V ${mesValStr}/${anoValStr} LVEE${diaProducao.toString().padStart(2, '0')}${horaFormatada} ${letraAno}`;
-                    codigoHTML = `<strong>Código Completo:</strong><br><code class="fs-5">${codigoTexto}</code>`;
-
-                } else if (['D11', 'D12'].includes(linha)) {
-                    codigoTexto = `V ${mesValStr}/${anoValStr} L VHE ${diaProducao.toString().padStart(2, '0')} ${horaFormatada} ${letraAno}`;
-                    codigoHTML = `
-                        <div><strong>Validade:</strong> <code>V ${mesValStr}/${anoValStr}</code></div>
-                        <div><strong>Linha:</strong> <code>L VHE ${diaProducao.toString().padStart(2, '0')} ${horaFormatada} ${letraAno}</code></div>
-                    `;
-
-                } else if (['A01', 'A02', 'A03', 'A04', 'A06', 'A07', 'A08'].includes(linha)) {
-                    codigoTexto = `F: ${mesProdStr}/${ano.toString().slice(-2)} V: ${mesValStr}/${anoValStr}\nL: V${letraLinha}E ${diaProducao.toString().padStart(2, '0')} ${horaFormatada} ${letraAno}`;
-                    codigoHTML = `
-                        <div><strong>Fabricação:</strong> <code>F: ${mesProdStr}/${ano.toString().slice(-2)}</code></div>
-                        <div><strong>Validade:</strong> <code>V: ${mesValStr}/${anoValStr}</code></div>
-                        <div><strong>Linha:</strong> <code>L: V${letraLinha}E ${diaProducao.toString().padStart(2, '0')} ${horaFormatada} ${letraAno}</code></div>
-                    `;
-                }
-
-                // ==================== EXIBIÇÃO ====================
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                 const resultadoDiv = document.getElementById('resultadoValidade');
                 const detailsDiv = document.getElementById('validadeDetails');
                 const statusDiv = document.getElementById('validadeStatus');
                 const codigoDiv = document.getElementById('codigoValidade');
 
-<<<<<<< HEAD
                 detailsDiv.innerHTML = `
                     ${infoAjuste}
                     ${infoMeses}
@@ -520,38 +434,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     resultadoDiv.style.borderLeft = '4px solid #c0392b';
                     detailsDiv.appendChild(mostrarAlerta('danger', 'PRODUTO VENCIDO',
                         'Este produto não pode ser comercializado. Destinação conforme procedimento CRQS.'));
-=======
-                let infoAjusteDias = '';
-                if (diaProducao !== diaAtual) {
-                    infoAjusteDias = `<div class="alert alert-info mt-2">Dia ajustado de ${diaAtual} para ${diaProducao}.</div>`;
-                }
-
-                detailsDiv.innerHTML = `
-                    ${infoAjusteDias}
-                    <div class="mt-3">${codigoHTML}</div>
-                `;
-
-                if (aprovado) {
-                    const statusTexto = diasRestantes > 30 ? 'PRODUTO APROVADO' : 'PRODUTO APROVADO (Próximo ao vencimento)';
-                    statusDiv.innerHTML = `<span class="text-success"><i class="fas fa-check-circle me-2"></i>${statusTexto}</span>`;
-                } else {
-                    statusDiv.innerHTML = '<span class="text-danger"><i class="fas fa-times-circle me-2"></i>PRODUTO REPROVADO (CRQS/PQS)</span>';
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                 }
 
                 // Exibe código — cada linha do código em uma linha separada visualmente
                 const codigoLinhas = codigo.split('\n').map(l => `<div>${l}</div>`).join('');
                 codigoDiv.innerHTML = `
                     <h6 class="mb-2"><i class="fas fa-barcode me-2"></i>Código de Validade:</h6>
-<<<<<<< HEAD
                     <code class="fs-5" id="codigoTexto">${codigoLinhas}</code>
                     <button class="btn btn-sm btn-outline-primary ms-3 mt-2" id="btnCopiarCodigo">
                         <i class="fas fa-copy me-1"></i>Copiar
-=======
-                    <pre class="fs-5 p-3 bg-dark text-white rounded">${codigoTexto}</pre>
-                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="navigator.clipboard.writeText('${codigoTexto.replace(/\n/g, '\\n')}')">
-                        <i class="fas fa-copy me-1"></i>Copiar Código
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
                     </button>
                 `;
 
@@ -573,6 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 resultadoDiv.classList.remove('d-none');
+                resultadoDiv.classList.add('fade-in');
                 resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             } catch (error) {
@@ -606,7 +498,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-<<<<<<< HEAD
     // ==================== FEEDBACK VISUAL ====================
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', function () {
@@ -619,7 +510,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     console.log('SmartQuality 4.0 carregado com sucesso!');
-=======
-    console.log('✅ SmartQuality 4.0 atualizado com sucesso!');
->>>>>>> 554ca80d022bb91c803a1395b768fb1db5299c0a
 });
