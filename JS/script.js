@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapeamentoLetras = {
         linhas: {
             'S01': 'A', 'S03': 'B', 'S08': 'D', 'S10': 'E',
-            'S11': 'F', 'S12': 'G', 'S14': 'H', 'D11': 'K', 'D13': 'Em Breve',
+            'S11': 'F', 'S12': 'G', 'S14': 'H', 'D11': 'K', 'D13': 'L',
             'A01': 'M', 'A02': 'T', 'A03': 'O', 'A04': 'P', 'A07': 'S',
             'A06': 'X', 'A08': 'Z', 'A09': 'W', 'A10': 'Y', 'AG01': 'N'
         },
